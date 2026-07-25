@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	plugin "github.com/WindyPear-Team/veloce-plugin-helper"
+	plugin "github.com/veloce-ailab/veloce-plugin-helper"
 )
 
 const (

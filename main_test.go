@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	plugin "github.com/WindyPear-Team/veloce-plugin-helper"
+	plugin "github.com/veloce-ailab/veloce-plugin-helper"
 )
 
 func TestApplyInstructionsAndNormalRequestRules(t *testing.T) {
