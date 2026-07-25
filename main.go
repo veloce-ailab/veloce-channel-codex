@@ -34,7 +34,7 @@ func newPlugin() *plugin.Plugin {
 	return plugin.New(plugin.Manifest{
 		ID:          pluginID,
 		Name:        "ChatGPT 订阅（Codex）",
-		Version:     "0.1.0",
+		Version:     "0.1.1",
 		Description: "通过账号池将一个或多个 ChatGPT Codex 订阅安全提供给多台已授权设备使用。",
 		Author:      "WindyPear Team",
 		Permissions: []string{"plugin.settings.global", "plugin.channel.http"},
@@ -56,9 +56,12 @@ func newPlugin() *plugin.Plugin {
 				OptionsFrom: "pools", OptionLabel: "name", OptionValue: "id",
 			}}},
 		}},
-		Frontend: plugin.Frontend{Sidebar: []plugin.SidebarItem{{Label: "Codex 账号池", Path: "status"}, {Label: "Codex 使用流程", Path: "guide"}}, Routes: []plugin.Route{
-			{Path: "status", Title: "Codex 账号池状态", Description: "查看账号池与账号状态。", Page: codexDashboard()},
-			{Path: "guide", Title: "Codex 使用流程", Description: "按步骤完成账号池、上级渠道和设备访问配置。", Page: codexUsageGuide()},
+		Frontend: plugin.Frontend{Sidebar: []plugin.SidebarItem{
+			{Label: "Codex 账号池", Path: "status", Access: plugin.FrontendAccessAdmin},
+			{Label: "Codex 使用流程", Path: "guide", Access: plugin.FrontendAccessAdmin},
+		}, Routes: []plugin.Route{
+			{Path: "status", Title: "Codex 账号池状态", Description: "查看账号池与账号状态。", Page: codexDashboard(), Access: plugin.FrontendAccessAdmin},
+			{Path: "guide", Title: "Codex 使用流程", Description: "按步骤完成账号池、上级渠道和设备访问配置。", Page: codexUsageGuide(), Access: plugin.FrontendAccessAdmin},
 		}},
 	})
 }
