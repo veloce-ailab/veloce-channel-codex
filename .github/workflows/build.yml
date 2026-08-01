@@ -1,0 +1,47 @@
+name: Build plugin
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - uses: acifani/setup-tinygo@v3
+        with:
+          tinygo-version: "0.40.1"
+
+      - name: Test
+        run: go test ./...
+
+      - name: Build WASM plugin
+        run: |
+          mkdir -p dist
+          tinygo build -target=wasi -o dist/veloce-channel-codex.wasm .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: veloce-channel-codex
+          path: dist/veloce-channel-codex.wasm
+          if-no-files-found: error
+
+      - name: Publish release asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/veloce-channel-codex.wasm

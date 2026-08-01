@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"hash/fnv"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
-	plugin "github.com/veloce-ailab/veloce-plugin-helper"
+	plugin "github.com/WindyPear-Team/veloce-plugin-helper"
 )
 
 const (
@@ -19,6 +20,8 @@ const (
 	oauthTokenURL  = "https://auth.openai.com/oauth/token"
 	oauthClientID  = "app_EMoamEEZ73f0CkXaXp7hrann"
 )
+
+const githubRepository = "https://github.com/veloce-ailab/veloce-channel-codex"
 
 func codexDashboard() json.RawMessage {
 	return json.RawMessage(`{"type":"page","children":[{"type":"settings_summary","title":"运行概览","fields":[{"name":"scheduling","label":"账号调度方式","default":"round_robin"},{"name":"base_url","label":"Codex 服务地址","default":"https://chatgpt.com"}]},{"type":"settings_list","name":"pools","title":"账号池","description":"已启用的账号池可在上级渠道中被选择。","empty_text":"暂无账号池，请先前往插件设置创建。","columns":[{"key":"id","label":"账号池 ID"},{"key":"name","label":"名称"},{"key":"enabled","label":"状态","format":"boolean"}]},{"type":"settings_list","name":"accounts","title":"账号","description":"登录凭据不会在此页面显示。","empty_text":"暂无账号，请在插件设置中添加。","columns":[{"key":"id","label":"账号 ID"},{"key":"pool_id","label":"所属账号池"},{"key":"enabled","label":"状态","format":"boolean"}]}]}`)
@@ -393,8 +396,17 @@ func integerValue(value any) int {
 
 func main() {}
 
+type manifestWithRepository struct {
+	plugin.Manifest
+	GitHub string `json:"github,omitempty"`
+}
+
+func exportedManifest() manifestWithRepository {
+	return manifestWithRepository{Manifest: app.Manifest, GitHub: githubRepository}
+}
+
 //export plugin_manifest
-func manifest() { app.ExportManifest() }
+func manifest() { _ = json.NewEncoder(os.Stdout).Encode(exportedManifest()) }
 
 //export plugin_init
 func initPlugin() { app.ExportInit() }

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	plugin "github.com/veloce-ailab/veloce-plugin-helper"
+	plugin "github.com/WindyPear-Team/veloce-plugin-helper"
 )
 
 func TestApplyInstructionsAndNormalRequestRules(t *testing.T) {
@@ -68,5 +68,19 @@ func TestManifestDeclaresPoolBackedUpstream(t *testing.T) {
 	}
 	if len(upstream.Config.Fields) != 1 || upstream.Config.Fields[0].OptionsFrom != "pools" {
 		t.Fatalf("config = %#v", upstream.Config)
+	}
+}
+
+func TestManifestDeclaresGitHubRepository(t *testing.T) {
+	raw, err := json.Marshal(exportedManifest())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest map[string]any
+	if err := json.Unmarshal(raw, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if manifest["github"] != githubRepository {
+		t.Fatalf("github = %#v", manifest["github"])
 	}
 }
