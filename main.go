@@ -399,17 +399,23 @@ func integerValue(value any) int {
 
 func main() {}
 
-type manifestWithRepository struct {
-	plugin.Manifest
-	GitHub string `json:"github,omitempty"`
-}
-
-func exportedManifest() manifestWithRepository {
-	return manifestWithRepository{Manifest: app.Manifest, GitHub: githubRepository}
+func exportedManifestJSON() []byte {
+	raw := app.Manifest.JSON()
+	if len(raw) == 0 || raw[len(raw)-1] != '}' {
+		return raw
+	}
+	result := make([]byte, 0, len(raw)+len(githubRepository)+16)
+	result = append(result, raw[:len(raw)-1]...)
+	result = append(result, `,"github":`...)
+	result = append(result, strconv.Quote(githubRepository)...)
+	return append(result, '}')
 }
 
 //export plugin_manifest
-func manifest() { _ = json.NewEncoder(os.Stdout).Encode(exportedManifest()) }
+func manifest() {
+	_, _ = os.Stdout.Write(exportedManifestJSON())
+	_, _ = os.Stdout.Write([]byte{'\n'})
+}
 
 //export plugin_init
 func initPlugin() { app.ExportInit() }

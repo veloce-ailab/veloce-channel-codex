@@ -72,12 +72,8 @@ func TestManifestDeclaresPoolBackedUpstream(t *testing.T) {
 }
 
 func TestManifestDeclaresGitHubRepository(t *testing.T) {
-	raw, err := json.Marshal(exportedManifest())
-	if err != nil {
-		t.Fatal(err)
-	}
 	var manifest map[string]any
-	if err := json.Unmarshal(raw, &manifest); err != nil {
+	if err := json.Unmarshal(exportedManifestJSON(), &manifest); err != nil {
 		t.Fatal(err)
 	}
 	if manifest["github"] != githubRepository {
