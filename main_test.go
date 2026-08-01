@@ -84,3 +84,9 @@ func TestManifestDeclaresGitHubRepository(t *testing.T) {
 		t.Fatalf("github = %#v", manifest["github"])
 	}
 }
+
+func TestManifestUsesBuildVersion(t *testing.T) {
+	if app.Manifest.Version != version {
+		t.Fatalf("version = %q, want %q", app.Manifest.Version, version)
+	}
+}

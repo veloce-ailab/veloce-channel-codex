@@ -28,10 +28,20 @@ jobs:
       - name: Test
         run: go test ./...
 
+      - name: Determine plugin version
+        id: version
+        shell: bash
+        run: |
+          version="v0.0.0-dev.${GITHUB_SHA::7}"
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            version="$GITHUB_REF_NAME"
+          fi
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+
       - name: Build WASM plugin
         run: |
           mkdir -p dist
-          tinygo build -target=wasi -o dist/veloce-channel-codex.wasm .
+          tinygo build -target=wasi -ldflags="-X main.version=${{ steps.version.outputs.value }}" -o dist/veloce-channel-codex.wasm .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

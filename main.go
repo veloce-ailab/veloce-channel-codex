@@ -21,6 +21,9 @@ const (
 	oauthClientID  = "app_EMoamEEZ73f0CkXaXp7hrann"
 )
 
+// version is replaced by the release workflow from the Git tag.
+var version = "v0.0.0-dev"
+
 const githubRepository = "https://github.com/veloce-ailab/veloce-channel-codex"
 
 func codexDashboard() json.RawMessage {
@@ -37,7 +40,7 @@ func newPlugin() *plugin.Plugin {
 	return plugin.New(plugin.Manifest{
 		ID:          pluginID,
 		Name:        "ChatGPT 订阅（Codex）",
-		Version:     "0.1.1",
+		Version:     version,
 		Description: "通过账号池将一个或多个 ChatGPT Codex 订阅安全提供给多台已授权设备使用。",
 		Author:      "WindyPear Team",
 		Permissions: []string{"plugin.settings.global", "plugin.channel.http"},
